@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>定位</title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=34d94b66288869a161fd031343408d4d"></script> 
+	<style type="text/css">
+		#out{
+			width: 90vw;
+			height: 70vh;
+			margin: auto;
+			border: 2px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<h1 class="mui-title">定位</h1>
+	</header>
+	<div class="mui-content">
+		<div id="out">
+			
+		</div>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn">定位</button>
+	</div>
+	
+</body>
+<script type="text/javascript" charset="utf-8">
+	// 扩展API加载完毕后调用onPlusReady回调函数 
+	document.addEventListener( "plusready", function(){
+		$('#btn').click(function(){
+			plus.geolocation.getCurrentPosition(successCB, errorCB);
+		})
+	}, false );
+	
+	function successCB(position){
+		// $('#out').html(`
+		// 	<p>坐标纬度值${position.coords.latitude}</p>
+		// 	<p>坐标经度值${position.coords.longitude}</p>
+		// 	<p>${position.address.country}--${position.address.province}--${position.address.city}--${position.address.district}</p>
+		// 	<p>${position.addresses}</p>
+		// `);
+		
+		// 创建一个 Marker 实例：
+		var marker = new AMap.Marker({
+			position: new AMap.LngLat(position.coords.longitude, position.coords.latitude),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+			title: position.addresses
+		});
+		// AMap是高德,BMap是百度
+		var map = new AMap.Map('out', {
+			zoom:16,//级别
+			center: [position.coords.longitude, position.coords.latitude],//中心点坐标
+			viewMode:'3D'//使用3D视图
+		});
+		// 将创建的点标记添加到已有的地图实例：
+		map.add(marker);
+	}
+	
+	function errorCB(err){
+		console.log(err);
+	}
+</script>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>个推</title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		#out{
+			width: 90vw;
+			height: 70vh;
+			margin: auto;
+			border: 2px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<h1 class="mui-title">个推</h1>
+	</header>
+	<div class="mui-content">
+		<div id="out">
+			
+		</div>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn">推送</button>
+	</div>
+	
+</body>
+<script type="text/javascript" charset="utf-8">
+	// 扩展API加载完毕后调用onPlusReady回调函数 
+	document.addEventListener( "plusready", function(){
+		plus.push.addEventListener( 'click' , function(){
+			alert('用户点击了')
+		} );
+		$('#btn').click(function(){
+			plus.push.createMessage( '平安喜乐，天天开心' );
+		})
+	}, false );
+	
+	function successCB(position){
+	}
+	
+	function errorCB(err){
+		console.log(err);
+	}
+</script>
+</html>

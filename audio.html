@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>音频</title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		#out{
+			width: 90vw;
+			height: 70vh;
+			margin: auto;
+			border: 2px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<h1 class="mui-title">音频</h1>
+	</header>
+	<div class="mui-content">
+		<div id="out">
+		</div>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn">开始录音</button>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn1">停止</button>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn2">播放</button>
+	</div>
+	
+</body>
+<script type="text/javascript" charset="utf-8">
+	// 扩展API加载完毕后调用onPlusReady回调函数 
+	document.addEventListener( "plusready", function(){
+		var recorder = null;
+		$('#btn').click(function(){
+			// 获取当前设备的录音对象
+			recorder = plus.audio.getRecorder();
+			recorder.record( {filename:"_doc/audio/"}, successCB, errorCB );
+			plus.nativeUI.toast('开始录音')
+		})
+		
+		// 停止录音
+		$('#btn1').click(function(){
+			recorder.stop();
+			plus.nativeUI.toast('停止录音')
+		})
+		
+	}, false );
+	
+	function successCB(acceleration){
+		var player = null;
+		// 播放录音
+		$('#btn2').click(function(){
+			// 创建音频播放器对象
+			player = plus.audio.createPlayer(acceleration);
+			player.play();
+			plus.nativeUI.toast('播放')
+		})
+	}
+	
+	function errorCB(err){
+		console.log(err);
+	}
+</script>
+</html>

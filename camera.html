@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>拍照</title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		#out{
+			width: 90vw;
+			height: 70vh;
+			margin: auto;
+			border: 2px solid #ccc;
+		}
+		#out img{
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<h1 class="mui-title">拍照</h1>
+	</header>
+	<div class="mui-content">
+		<div id="out">
+			
+		</div>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn">拍照</button>
+	</div>
+	
+</body>
+<script type="text/javascript" charset="utf-8">
+	// 扩展API加载完毕后调用onPlusReady回调函数 
+	document.addEventListener( "plusready", function(){
+		$('#btn').click(function(){
+			// 要获取摄像头的索引值,1表示主摄像头，2表示辅摄像头
+			var cmr = plus.camera.getCamera();
+			var res = cmr.supportedImageResolutions[0];
+			var fmt = cmr.supportedImageFormats[0];
+			cmr.captureImage(successCB, errorCB, {resolution:res,format:fmt});
+		})
+	}, false );
+	
+	function successCB(path){
+		// 成功回调函数,把图片路径展示出来
+		// $('#out').html("<img src='"+path+"'/>")
+		// alert( "Capture image success: " + path );  
+		// 无法正常显示,借助IO模块,读写图片
+		plus.io.resolveLocalFileSystemURL( path, function(entry){
+			var url = entry.toLocalURL()
+			$('#out').html("<img src='"+url+"'/>")
+		}, function(err){
+			console.log(err);
+		} );
+	}
+	
+	function errorCB(err){
+		console.log(err);
+	}
+</script>
+</html>

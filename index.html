@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>支付通道</title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#out {
+				width: 90vw;
+				height: 70vh;
+				margin: auto;
+				border: 2px solid #ccc;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">支付通道</h1>
+		</header>
+		<div class="mui-content">
+			<div id="out">
+
+			</div>
+			<button type="button" class="mui-btn mui-btn-blue" id="btn">支付通道</button>
+		</div>
+
+	</body>
+	<script type="text/javascript" charset="utf-8">
+		var channel = null;
+		// 扩展API加载完毕后调用onPlusReady回调函数 
+		document.addEventListener("plusready", function() {
+			// 获取支付通道  
+			plus.payment.getChannels(function(channels) {
+				channel = channels[0];
+			}, function(e) {
+				alert("获取支付通道失败：" + e.message);
+			});
+			
+			$('#btn').click(function(){
+				pay('alipay');
+			})
+			
+		}, false);
+		var ALIPAYSERVER = 'http://demo.dcloud.net.cn/helloh5/payment/alipay.php?total=';
+		var WXPAYSERVER = 'http://demo.dcloud.net.cn/helloh5/payment/wxpay.php?total=';
+		// 2. 发起支付请求  
+		function pay(id) {
+			// 从服务器请求支付订单  
+			var PAYSERVER = '';
+			if (id == 'alipay') {
+				PAYSERVER = ALIPAYSERVER;
+			} else if (id == 'wxpay') {
+				PAYSERVER = WXPAYSERVER;
+			} else {
+				plus.nativeUI.alert("不支持此支付通道！", null, "捐赠");
+				return;
+			}
+			var xhr = new XMLHttpRequest(); //uni-app中请使用uni的request api联网  
+			xhr.onreadystatechange = function() {
+				switch (xhr.readyState) {
+					case 4:
+						if (xhr.status == 200) {
+							plus.payment.request(channel, xhr.responseText, function(result) {
+								plus.nativeUI.alert("支付成功！", function() {
+									back();
+								});
+							}, function(error) {
+								plus.nativeUI.alert("支付失败：" + error.code);
+							});
+						} else {
+							alert("获取订单信息失败！");
+						}
+						break;
+					default:
+						break;
+				}
+			}
+			xhr.open('GET', PAYSERVER);
+			xhr.send();
+		}
+
+		function successCB(position) {
+			
+		}
+
+		function errorCB(err) {
+			console.log(err);
+		}
+	</script>
+</html>

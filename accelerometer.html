@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>加速器</title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		#out{
+			width: 90vw;
+			height: 70vh;
+			margin: auto;
+			border: 2px solid #ccc;
+			position: relative;
+			overflow: hidden;
+		}
+		#out p{
+			width: 100%;
+			height: 35vh;
+			position: absolute;
+		}
+		.p1{
+			top: 0;
+			background: skyblue;
+		}
+		.p2{
+			top: 35vh;
+			background: pink;
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<h1 class="mui-title">加速器</h1>
+	</header>
+	<div class="mui-content">
+		<div id="out">
+			<p class="p1"></p>
+			<p class="p2"></p>
+		</div>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn">获取加速度</button>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn1">开启监听</button>
+		<button type="button" class="mui-btn mui-btn-blue" id="btn2">关闭监听</button>
+	</div>
+	
+</body>
+<script type="text/javascript" charset="utf-8">
+	// 扩展API加载完毕后调用onPlusReady回调函数 
+	document.addEventListener( "plusready", function(){
+		var watchId = null;
+		// 点击获取当前设备的加速度信息
+		$('#btn').click(function(){
+			plus.accelerometer.getCurrentAcceleration( successCB, errorCB );
+		});
+		
+		// 开启监听加速度
+		$('#btn1').click(function(){
+			watchId = plus.accelerometer.watchAcceleration( successCB, errorCB, {frequency:1000 });
+		});
+		
+		// 关闭监听
+		$('#btn2').click(function(){
+			plus.accelerometer.clearWatch( watchId );
+		});
+		
+	}, false );
+	
+	function successCB(acceleration){
+		// 将三个方向的值写到out中
+		// $('#out').html(`
+		// 	<div>${acceleration.xAxis}</div>
+		// 	<div>${acceleration.yAxis}</div>
+		// 	<div>${acceleration.zAxis}</div>
+		// `);
+		
+		// 摇一摇功能
+		if(Math.abs(acceleration.xAxis)+Math.abs(acceleration.yAxis)+Math.abs(acceleration.zAxis) > 20){
+			$('.p1').animate({top:'-35vh'},800,function(){
+				setTimeout(function(){
+					$('.p1').animate({top:0},800)
+				},1000)
+			})
+			$('.p2').animate({top:'70vh'},800,function(){
+				setTimeout(function(){
+					$('.p2').animate({top:'35vh'},800)
+				},1000)
+			})
+		}
+	}
+	function errorCB(err){
+		console.log(err);
+	}
+</script>
+</html>
